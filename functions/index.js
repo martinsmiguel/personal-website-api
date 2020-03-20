@@ -157,3 +157,40 @@ app.get('/projects/:projectId', (req, res) => {
         .then(doc => res.status(200).send(doc))
         .catch(error => res.status(400).send(`Cannot get profile: ${error}`));
 })
+
+
+//== == == == == == == == == == == == == == ==
+//Update
+
+// Update a profile 
+app.patch('/profiles/:profileId', async (req, res) => {
+    const updatedDoc = await firebaseHelper.firestore
+        .updateDocument(db, profilesCollection, req.params.profileId, req.body);
+    res.status(204).send(`Update a new profile: ${updatedDoc}`);
+})
+
+// Update a project
+app.patch('/projects/:projectId', async (req, res) => {
+    const updatedDoc = await firebaseHelper.firestore
+        .updateDocument(db, projectsCollection, req.params.projectId, req.body);
+    res.status(204).send(`Update a new projects: ${updatedDoc}`);
+})
+
+//== == == == == == == == == == == == == == ==
+//Delete
+
+// Delete a Profile  
+app.delete('/profiles/:profileId', async (req, res) => {
+    const deletedProfile = await firebaseHelper.firestore
+        .deleteDocument(db, profilesCollection, req.params.profileId);
+    res.status(204).send(`Profile is deleted: ${deletedProfile}`);
+})
+
+// Delete a project 
+app.delete('/projects/:projectId', async (req, res) => {
+    const deletedProject = await firebaseHelper.firestore
+        .deleteDocument(db, projectsCollection, req.params.projectId);
+    res.status(204).send(`Project is deleted: ${deletedProject}`);
+})
+
+//== == == == == == == == == == == == == == ==
