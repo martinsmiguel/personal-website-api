@@ -1,22 +1,40 @@
-const functions = require('firebase-functions');
-const admin = require("firebase-admin");
-const express = require("express");
+//Save a private data in .env
+//require('dotenv').config();
 
+//API dependencies
+const admin = require("firebase-admin");
+const functions = require('firebase-functions');
 const firebaseHelper = require('firebase-functions-helper');
+const express = require("express");
 const bodyParser = require('body-parser');
 
-admin.initializeApp();
+// //ServiceAccountKey.json is in .gitignore
+// const serviceAccount = require('./ServiceAccountKey.json');
+// //Initialize Firebase with ServiceAccount
+// admin.initializeApp({
+//    credential: admin.credential.cert(serviceAccount),
+//    databaseURL: "process.env.databaseURL"
+// });
+
+//config.js is in .gitignore
+const config = require("./config");
+//Initialize Firebase Configs
+admin.initializeApp(config);
+
+//Define database
 const db = admin.firestore();
 
-
+//Express for CRUD application
 const app = express();
+//Express for API
 const api = express();
 
+//Define endpoint
 api.use('/home', app);
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: false }));
 
-
+//Export api with https functions
 exports.api = functions.https.onRequest(api);
 
 //== == == == == == == == == == == == == == ==
@@ -28,7 +46,7 @@ const profilesCollection = 'profiles';
 //Define Collection projects
 const projectsCollection = 'projects';
 
-//Define class Profile
+//Define Profile class
 class Profile {
     constructor(name, birth, email, password, office, description, tags, image, link) {
         this.name = name,
@@ -41,9 +59,9 @@ class Profile {
         this.image = image,
         this.link = link
     }
-}
+};
 
-//Define class Project
+//Define Project class 
 class Project {
     constructor( type, date, title, description, author, collaborators, tags, image, link, status) {
         this.type = type,
@@ -57,7 +75,7 @@ class Project {
         this.link = link
         this.status = status
     }
-}
+};
 
 //== == == == == == == == == == == == == == ==
 //ADD
@@ -90,7 +108,7 @@ app.post('/profiles', async (req, res) => {
     } catch (error) {
         res.status(400).send(user)
     }        
-})
+});
 
 // Add new project
 app.post('/projects', async (req, res) => {
@@ -120,7 +138,7 @@ app.post('/projects', async (req, res) => {
     } catch (error) {
         res.status(400).send(prjt)
     }        
-})
+});
 
 //== == == == == == == == == == == == == == == 
 //View
@@ -131,7 +149,7 @@ app.get('/profiles', (req, res) => {
         .backup(db, profilesCollection)
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(`Cannot get profiles: ${error}`));
-})
+});
 
 // View a profile
 app.get('/profiles/:profileId', (req, res) => {
@@ -139,7 +157,7 @@ app.get('/profiles/:profileId', (req, res) => {
         .getDocument(db, profilesCollection, req.params.profileId)
         .then(doc => res.status(200).send(doc))
         .catch(error => res.status(400).send(`Cannot get profile: ${error}`));
-})
+});
 
 
 // View all projects
@@ -148,7 +166,7 @@ app.get('/projects', (req, res) => {
         .backup(db, projectsCollection)
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(`Cannot get projects: ${error}`));
-})
+});
 
 // View a project
 app.get('/projects/:projectId', (req, res) => {
@@ -156,7 +174,7 @@ app.get('/projects/:projectId', (req, res) => {
         .getDocument(db, projectsCollection, req.params.projectId)
         .then(doc => res.status(200).send(doc))
         .catch(error => res.status(400).send(`Cannot get profile: ${error}`));
-})
+});
 
 
 //== == == == == == == == == == == == == == ==
@@ -167,14 +185,14 @@ app.patch('/profiles/:profileId', async (req, res) => {
     const updatedDoc = await firebaseHelper.firestore
         .updateDocument(db, profilesCollection, req.params.profileId, req.body);
     res.status(204).send(`Update a new profile: ${updatedDoc}`);
-})
+});
 
 // Update a project
 app.patch('/projects/:projectId', async (req, res) => {
     const updatedDoc = await firebaseHelper.firestore
         .updateDocument(db, projectsCollection, req.params.projectId, req.body);
     res.status(204).send(`Update a new projects: ${updatedDoc}`);
-})
+});
 
 //== == == == == == == == == == == == == == ==
 //Delete
@@ -184,13 +202,13 @@ app.delete('/profiles/:profileId', async (req, res) => {
     const deletedProfile = await firebaseHelper.firestore
         .deleteDocument(db, profilesCollection, req.params.profileId);
     res.status(204).send(`Profile is deleted: ${deletedProfile}`);
-})
+});
 
 // Delete a project 
 app.delete('/projects/:projectId', async (req, res) => {
     const deletedProject = await firebaseHelper.firestore
         .deleteDocument(db, projectsCollection, req.params.projectId);
     res.status(204).send(`Project is deleted: ${deletedProject}`);
-})
+});
 
 //== == == == == == == == == == == == == == ==
