@@ -40,10 +40,10 @@ exports.api = functions.https.onRequest(api);
 //== == == == == == == == == == == == == == ==
 //Define 
 
-//Define Collection profiles
+//Define Profiles Collection
 const profilesCollection = 'profiles';
 
-//Define Collection projects
+//Define Projects Collection
 const projectsCollection = 'projects';
 
 //Define Profile class
@@ -141,9 +141,9 @@ app.post('/projects', async (req, res) => {
 });
 
 //== == == == == == == == == == == == == == == 
-//View
+//Get
 
-// View all profiles
+// Get all profiles
 app.get('/profiles', (req, res) => {
     firebaseHelper.firestore
         .backup(db, profilesCollection)
@@ -151,7 +151,7 @@ app.get('/profiles', (req, res) => {
         .catch(error => res.status(400).send(`Cannot get profiles: ${error}`));
 });
 
-// View a profile
+// Get a profile
 app.get('/profiles/:profileId', (req, res) => {
     firebaseHelper.firestore
         .getDocument(db, profilesCollection, req.params.profileId)
@@ -160,7 +160,7 @@ app.get('/profiles/:profileId', (req, res) => {
 });
 
 
-// View all projects
+// Get all projects
 app.get('/projects', (req, res) => {
     firebaseHelper.firestore
         .backup(db, projectsCollection)
@@ -168,7 +168,7 @@ app.get('/projects', (req, res) => {
         .catch(error => res.status(400).send(`Cannot get projects: ${error}`));
 });
 
-// View a project
+// Get a project
 app.get('/projects/:projectId', (req, res) => {
     firebaseHelper.firestore
         .getDocument(db, projectsCollection, req.params.projectId)
