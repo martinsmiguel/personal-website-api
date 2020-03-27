@@ -7,6 +7,7 @@ const functions = require('firebase-functions');
 const firebaseHelper = require('firebase-functions-helper');
 const express = require("express");
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // //ServiceAccountKey.json is in .gitignore
 // const serviceAccount = require('./ServiceAccountKey.json');
@@ -33,6 +34,8 @@ const api = express();
 api.use('/home', app);
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: false }));
+api.use(cors());
+app.use(cors());
 
 //Export api with https functions
 exports.api = functions.https.onRequest(api);
