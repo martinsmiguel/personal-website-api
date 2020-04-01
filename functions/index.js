@@ -51,7 +51,7 @@ const projectsCollection = 'projects';
 
 //Define Profile class
 class Profile {
-    constructor(name, birth, email, password, office, description, tags, image, link) {
+    constructor(name, birth, email, password, office, description, tags, image, link, bookId, projectId) {
         this.name = name,
         this.birth = birth,
         this.email = email,
@@ -60,7 +60,9 @@ class Profile {
         this.description = description,
         this.tags = tags,
         this.image = image,
-        this.link = link
+        this.link = link,
+        this.bookId = bookId,
+        this.projectId = projectId
     }
 };
 
@@ -97,6 +99,8 @@ app.post('/profiles', async (req, res) => {
         profile.tags = req.body['tags'];
         profile.image = req.body['image'];
         profile.link = req.body['link'];
+        profile.bookId = req.body['bookId'];
+        profile.projectId = req.body['projectId'];
 
         const user = JSON.parse(JSON.stringify(profile));
 
